@@ -1,10 +1,50 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { ShaderPoints } from '../ui/ShaderPoints';
+
+// Shaders for GPU-accelerated neuron animation
+const neuronVertexShader = `
+  attribute float a_random;
+  varying vec3 v_color;
+  varying vec3 v_position;
+  varying float v_random;
+  uniform float u_size;
+
+  void main() {
+    v_color = color;
+    v_position = position;
+    v_random = a_random;
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+    gl_PointSize = u_size;
+  }
+`;
+
+const neuronFragmentShader = `
+  uniform float u_time;
+  varying vec3 v_color;
+  varying vec3 v_position;
+  varying float v_random;
+
+  void main() {
+    float wavePhase = u_time * 3.0 + length(v_position) * 0.5;
+    float activity = 0.3 + sin(wavePhase) * 0.4 + v_random * 0.3;
+
+    float r = 0.1 + activity * 0.5;
+    float g = 0.2 + activity * 0.7;
+    float b = 0.8 + activity * 0.2;
+
+    vec3 final_color = vec3(r, g, b);
+
+    float intensity = smoothstep(0.5, 1.0, activity);
+    gl_FragColor = vec4(final_color, intensity * 0.9);
+  }
+`;
+
 
 export const PhysicalBrain = () => {
   const brainRef = useRef<THREE.Group>(null);
-  const neuronsRef = useRef<THREE.Points>(null);
   const synapsesRef = useRef<THREE.LineSegments>(null);
 
   // Generate neural network structure
@@ -65,24 +105,33 @@ export const PhysicalBrain = () => {
     };
   }, []);
 
-  // Create neuron positions and colors for points
-  const { neuronPositions, neuronColors } = useMemo(() => {
+  // Create neuron geometry for shader points
+  const neuronGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(neuralNetwork.neurons.length * 3);
     const colors = new Float32Array(neuralNetwork.neurons.length * 3);
+    const randoms = new Float32Array(neuralNetwork.neurons.length);
     
     neuralNetwork.neurons.forEach((neuron, i) => {
       positions[i * 3] = neuron.position.x;
       positions[i * 3 + 1] = neuron.position.y;
       positions[i * 3 + 2] = neuron.position.z;
       
-      // Neural colors based on activity
+      // Initial colors
       const activity = neuron.activity;
-      colors[i * 3] = 0.1 + activity * 0.4;     // R
-      colors[i * 3 + 1] = 0.2 + activity * 0.6; // G
-      colors[i * 3 + 2] = 0.8 + activity * 0.2; // B
+      colors[i * 3] = 0.1 + activity * 0.4;
+      colors[i * 3 + 1] = 0.2 + activity * 0.6;
+      colors[i * 3 + 2] = 0.8 + activity * 0.2;
+
+      // Random attribute for shader
+      randoms[i] = Math.random();
     });
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('a_random', new THREE.BufferAttribute(randoms, 1));
     
-    return { neuronPositions: positions, neuronColors: colors };
+    return geometry;
   }, [neuralNetwork]);
 
   useFrame(({ clock }) => {
@@ -94,26 +143,8 @@ export const PhysicalBrain = () => {
       const scale = 1 + Math.sin(time * 1.5) * 0.05;
       brainRef.current.scale.setScalar(scale);
     }
-    
-    // Animate neural firing
-    if (neuronsRef.current) {
-      const colors = neuronsRef.current.geometry.attributes.color.array as Float32Array;
-      
-      neuralNetwork.neurons.forEach((neuron, i) => {
-        // Update neural activity with wave-like propagation
-        const wavePhase = time * 3 + neuron.position.length() * 0.5;
-        neuron.activity = 0.3 + Math.sin(wavePhase) * 0.4 + Math.random() * 0.3;
         
-        // Update colors based on activity
-        colors[i * 3] = 0.1 + neuron.activity * 0.5;
-        colors[i * 3 + 1] = 0.2 + neuron.activity * 0.7;
-        colors[i * 3 + 2] = 0.8 + neuron.activity * 0.2;
-      });
-      
-      neuronsRef.current.geometry.attributes.color.needsUpdate = true;
-    }
-    
-    // Animate synaptic connections
+    // Animate synaptic connections (still on CPU for now)
     if (synapsesRef.current) {
       const colors = synapsesRef.current.geometry.attributes.color.array as Float32Array;
       
@@ -147,30 +178,17 @@ export const PhysicalBrain = () => {
         />
       </mesh>
       
-      {/* Neural network nodes */}
-      <points ref={neuronsRef}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={neuronPositions}
-            count={neuralNetwork.neurons.length}
-            itemSize={3}
-          />
-          <bufferAttribute
-            attach="attributes-color"
-            array={neuronColors}
-            count={neuralNetwork.neurons.length}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.05}
-          vertexColors
-          transparent
-          opacity={0.9}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
+      {/* Neural network nodes (now using shaders) */}
+      <ShaderPoints
+        geometry={neuronGeometry}
+        vertexShader={neuronVertexShader}
+        fragmentShader={neuronFragmentShader}
+        uniforms={{}}
+        pointSize={0.05}
+        transparent
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
       
       {/* Synaptic connections */}
       <lineSegments ref={synapsesRef}>

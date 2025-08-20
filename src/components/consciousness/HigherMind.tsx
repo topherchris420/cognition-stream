@@ -1,36 +1,86 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { ShaderPoints } from '../ui/ShaderPoints';
+
+// Shaders for GPU-accelerated particle animation
+const particleVertexShader = `
+  attribute float a_index;
+  varying vec3 v_color;
+  varying float v_index;
+  uniform float u_time;
+  uniform float u_size;
+
+  void main() {
+    v_color = color;
+    v_index = a_index;
+    vec3 pos = position;
+
+    // Pulsing motion from the original JS code
+    float phase = u_time * 2.0 + a_index * 0.01;
+    pos.y += sin(phase) * 0.02;
+
+    vec4 modelPosition = modelMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+    gl_PointSize = u_size;
+  }
+`;
+
+const particleFragmentShader = `
+  varying vec3 v_color;
+  varying float v_index;
+  uniform float u_time;
+
+  void main() {
+    // Color intensity pulsing from original JS
+    float colorPhase = u_time * 3.0 + v_index * 0.005;
+    float intensity = 0.3 + sin(colorPhase) * 0.3;
+
+    vec3 final_color = v_color * intensity;
+
+    gl_FragColor = vec4(final_color, 0.8);
+  }
+`;
+
 
 export const HigherMind = () => {
   const groupRef = useRef<THREE.Group>(null);
-  const particlesRef = useRef<THREE.Points>(null);
   const streamRefs = useRef<THREE.Mesh[]>([]);
 
   // Create ethereal energy field particles
   const particleCount = 2000;
-  const { positions, colors } = useMemo(() => {
+  const particleGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
+    const indices = new Float32Array(particleCount);
     
-    for (let i = 0; i < particleCount * 3; i += 3) {
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+
       // Spherical distribution around higher mind area
       const radius = 5 + Math.random() * 3;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
       
-      positions[i] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i + 1] = radius * Math.cos(phi) + 8; // Above the figure
-      positions[i + 2] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i3 + 1] = radius * Math.cos(phi) + 8; // Above the figure
+      positions[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
       
       // Golden-white ethereal colors
       const intensity = 0.5 + Math.random() * 0.5;
-      colors[i] = intensity * (0.9 + Math.random() * 0.1);     // R
-      colors[i + 1] = intensity * (0.8 + Math.random() * 0.2); // G
-      colors[i + 2] = intensity * (0.3 + Math.random() * 0.4); // B
+      colors[i3] = intensity * (0.9 + Math.random() * 0.1);     // R
+      colors[i3 + 1] = intensity * (0.8 + Math.random() * 0.2); // G
+      colors[i3 + 2] = intensity * (0.3 + Math.random() * 0.4); // B
+
+      indices[i] = i;
     }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('a_index', new THREE.BufferAttribute(indices, 1));
     
-    return { positions, colors };
+    return geometry;
   }, []);
 
   // Create fractal energy streams
@@ -65,28 +115,6 @@ export const HigherMind = () => {
       groupRef.current.position.y = Math.sin(time * 0.5) * 0.3;
     }
     
-    // Animate particles
-    if (particlesRef.current) {
-      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
-      const colors = particlesRef.current.geometry.attributes.color.array as Float32Array;
-      
-      for (let i = 0; i < particleCount * 3; i += 3) {
-        // Pulsing motion
-        const phase = time * 2 + i * 0.01;
-        positions[i + 1] += Math.sin(phase) * 0.002;
-        
-        // Color intensity pulsing
-        const colorPhase = time * 3 + i * 0.005;
-        const intensity = 0.3 + Math.sin(colorPhase) * 0.3;
-        colors[i] *= intensity;
-        colors[i + 1] *= intensity;
-        colors[i + 2] *= intensity;
-      }
-      
-      particlesRef.current.geometry.attributes.position.needsUpdate = true;
-      particlesRef.current.geometry.attributes.color.needsUpdate = true;
-    }
-    
     // Animate energy streams
     streamRefs.current.forEach((stream, index) => {
       if (stream) {
@@ -103,31 +131,18 @@ export const HigherMind = () => {
 
   return (
     <group ref={groupRef}>
-      {/* Main ethereal particle field */}
-      <points ref={particlesRef}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={positions}
-            count={particleCount}
-            itemSize={3}
-          />
-          <bufferAttribute
-            attach="attributes-color"
-            array={colors}
-            count={particleCount}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.1}
-          vertexColors
-          transparent
-          opacity={0.8}
-          blending={THREE.AdditiveBlending}
-          sizeAttenuation={true}
-        />
-      </points>
+      {/* Main ethereal particle field (now using shaders) */}
+      <ShaderPoints
+        geometry={particleGeometry}
+        vertexShader={particleVertexShader}
+        fragmentShader={particleFragmentShader}
+        uniforms={{}}
+        pointSize={0.1}
+        blending={THREE.AdditiveBlending}
+        transparent
+        opacity={0.8}
+        depthWrite={false}
+      />
       
       {/* Fractal energy streams */}
       {energyStreams.map((stream, index) => (
