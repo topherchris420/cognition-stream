@@ -1,6 +1,41 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { ShaderPoints } from '../ui/ShaderPoints';
+
+// Shaders for GPU-accelerated particle animation
+const particleVertexShader = `
+  attribute vec3 a_velocity;
+  varying vec3 v_color;
+  uniform float u_time;
+  uniform float u_size;
+
+  void main() {
+    v_color = color;
+    vec3 pos = position;
+
+    // Swirling, periodic motion using the velocity as a phase offset
+    float time = u_time * 0.5;
+    pos.x += sin(time * a_velocity.z * 30.0) * 0.8;
+    pos.y += cos(time * a_velocity.x * 30.0) * 0.8;
+    pos.z += sin(time * a_velocity.y * 30.0) * 0.8;
+
+    vec4 modelPosition = modelMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+    gl_PointSize = u_size;
+  }
+`;
+
+const particleFragmentShader = `
+  varying vec3 v_color;
+
+  void main() {
+    // Fade particles based on distance from center to avoid harsh edges
+    float dist = length(gl_PointCoord - vec2(0.5));
+    float opacity = 0.7 * (1.0 - dist);
+    gl_FragColor = vec4(v_color, opacity);
+  }
+`;
 
 export const PhysicalMind = () => {
   const mindRef = useRef<THREE.Group>(null);
@@ -22,7 +57,8 @@ export const PhysicalMind = () => {
   }, []);
 
   // Create flowing perception particles
-  const perceptionParticles = useMemo(() => {
+  const particleGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
     const particleCount = 1000;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -52,7 +88,11 @@ export const PhysicalMind = () => {
       colors[i3 + 2] = 0.8 + hue * 0.2; // B
     }
     
-    return { positions, colors, velocities, count: particleCount };
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('a_velocity', new THREE.BufferAttribute(velocities, 3));
+
+    return geometry;
   }, []);
 
   useFrame(({ clock }) => {
@@ -123,30 +163,17 @@ export const PhysicalMind = () => {
         </mesh>
       ))}
       
-      {/* Perception interpretation particles */}
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={perceptionParticles.positions}
-            count={perceptionParticles.count}
-            itemSize={3}
-          />
-          <bufferAttribute
-            attach="attributes-color"
-            array={perceptionParticles.colors}
-            count={perceptionParticles.count}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.03}
-          vertexColors
-          transparent
-          opacity={0.7}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
+      {/* Perception interpretation particles (now animated) */}
+      <ShaderPoints
+        geometry={particleGeometry}
+        vertexShader={particleVertexShader}
+        fragmentShader={particleFragmentShader}
+        uniforms={{}}
+        pointSize={0.03}
+        transparent
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
       
       {/* Central mind core */}
       <mesh position={[0, 0, 0]}>
