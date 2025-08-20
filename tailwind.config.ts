@@ -52,6 +52,14 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				consciousness: {
+					'higher-mind': 'hsl(var(--higher-mind))',
+					'higher-glow': 'hsl(var(--higher-mind-glow))',
+					'neural-pulse': 'hsl(var(--neural-pulse))',
+					'neural-network': 'hsl(var(--neural-network))',
+					'physical-mind': 'hsl(var(--physical-mind))',
+					'energy-flow': 'hsl(var(--energy-flow))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -88,7 +96,11 @@ export default {
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-ethereal': 'pulse-ethereal 3s ease-in-out infinite',
+				'flow-energy': 'flow-energy 4s linear infinite',
+				'neural-fire': 'neural-fire 1.5s ease-in-out infinite',
+				'consciousness-wave': 'consciousness-wave 8s ease-in-out infinite'
 			}
 		}
 	},
