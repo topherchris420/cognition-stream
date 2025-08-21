@@ -23,8 +23,8 @@ Cognition Stream is an interactive 3D web application that visualizes abstract c
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/vite_react_shadcn_ts.git
-   cd vite_react_shadcn_ts
+   git clone topherchris420/cognition-stream.git
+   cd cognition-stream
    ```
 
 2. **Install dependencies:**
