@@ -140,7 +140,6 @@ export const HigherMind = () => {
         pointSize={0.1}
         blending={THREE.AdditiveBlending}
         transparent
-        opacity={0.8}
         depthWrite={false}
       />
       
