@@ -42,13 +42,16 @@ const particleFragmentShader = `
   }
 `;
 
+interface HigherMindProps {
+  isMobile?: boolean;
+}
 
-export const HigherMind = () => {
+export const HigherMind = ({ isMobile = false }: HigherMindProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const streamRefs = useRef<THREE.Mesh[]>([]);
 
-  // Create ethereal energy field particles
-  const particleCount = 2000;
+  // Create ethereal energy field particles with mobile optimization
+  const particleCount = isMobile ? 800 : 2000;
   const particleGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
@@ -81,13 +84,14 @@ export const HigherMind = () => {
     geometry.setAttribute('a_index', new THREE.BufferAttribute(indices, 1));
     
     return geometry;
-  }, []);
+  }, [particleCount]);
 
-  // Create fractal energy streams
+  // Create fractal energy streams with mobile optimization
   const energyStreams = useMemo(() => {
     const streams = [];
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
+    const streamCount = isMobile ? 4 : 8;
+    for (let i = 0; i < streamCount; i++) {
+      const angle = (i / streamCount) * Math.PI * 2;
       const stream = {
         start: new THREE.Vector3(
           Math.cos(angle) * 6,
@@ -104,7 +108,7 @@ export const HigherMind = () => {
       streams.push(stream);
     }
     return streams;
-  }, []);
+  }, [isMobile]);
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -152,7 +156,7 @@ export const HigherMind = () => {
           }}
           position={stream.start}
         >
-          <cylinderGeometry args={[0.02, 0.05, 6, 8]} />
+          <cylinderGeometry args={[0.02, 0.05, 6, isMobile ? 4 : 8]} />
           <meshStandardMaterial
             color="#F59E0B"
             transparent
@@ -165,7 +169,7 @@ export const HigherMind = () => {
       
       {/* Central radiant core */}
       <mesh position={[0, 8, 0]}>
-        <sphereGeometry args={[1.5, 32, 32]} />
+        <sphereGeometry args={[1.5, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
         <meshStandardMaterial
           color="#FEF3C7"
           transparent

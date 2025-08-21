@@ -43,15 +43,19 @@ const neuronFragmentShader = `
 `;
 
 
-export const PhysicalBrain = () => {
+interface PhysicalBrainProps {
+  isMobile?: boolean;
+}
+
+export const PhysicalBrain = ({ isMobile = false }: PhysicalBrainProps) => {
   const brainRef = useRef<THREE.Group>(null);
   const synapsesRef = useRef<THREE.LineSegments>(null);
 
-  // Generate neural network structure
+  // Generate neural network structure with mobile optimization
   const neuralNetwork = useMemo(() => {
     const neurons = [];
     const connections = [];
-    const neuronCount = 500;
+    const neuronCount = isMobile ? 250 : 500;
     
     // Create neurons in brain-like distribution
     for (let i = 0; i < neuronCount; i++) {
@@ -103,7 +107,7 @@ export const PhysicalBrain = () => {
       connectionPositions: new Float32Array(connectionPositions),
       connectionColors: new Float32Array(connectionColors)
     };
-  }, []);
+  }, [isMobile]);
 
   // Create neuron geometry for shader points
   const neuronGeometry = useMemo(() => {
@@ -169,7 +173,7 @@ export const PhysicalBrain = () => {
     <group ref={brainRef}>
       {/* Semi-transparent brain outline */}
       <mesh position={[0, 1, 0]}>
-        <sphereGeometry args={[2.8, 32, 32]} />
+        <sphereGeometry args={[2.8, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
         <meshBasicMaterial
           color="#8B5CF6"
           transparent

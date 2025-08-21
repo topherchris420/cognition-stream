@@ -37,7 +37,11 @@ const particleFragmentShader = `
   }
 `;
 
-export const PhysicalMind = () => {
+interface PhysicalMindProps {
+  isMobile?: boolean;
+}
+
+export const PhysicalMind = ({ isMobile = false }: PhysicalMindProps) => {
   const mindRef = useRef<THREE.Group>(null);
   const auraRef = useRef<THREE.Mesh>(null);
   const perceptionWavesRef = useRef<THREE.Mesh[]>([]);
@@ -56,10 +60,10 @@ export const PhysicalMind = () => {
     return patterns;
   }, []);
 
-  // Create flowing perception particles
+  // Create flowing perception particles with mobile optimization
   const particleGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
-    const particleCount = 1000;
+    const particleCount = isMobile ? 500 : 1000;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
@@ -91,9 +95,9 @@ export const PhysicalMind = () => {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     geometry.setAttribute('a_velocity', new THREE.BufferAttribute(velocities, 3));
-
+    
     return geometry;
-  }, []);
+  }, [isMobile]);
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -133,7 +137,7 @@ export const PhysicalMind = () => {
     <group ref={mindRef}>
       {/* Main consciousness aura */}
       <mesh ref={auraRef} position={[0, 0, 0]}>
-        <sphereGeometry args={[4, 32, 32]} />
+        <sphereGeometry args={[4, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
         <meshBasicMaterial
           color="#20B2AA"
           transparent
@@ -152,7 +156,7 @@ export const PhysicalMind = () => {
           position={[0, 0, 0]}
           rotation={[Math.PI / 2, 0, 0]}
         >
-          <torusGeometry args={[pattern.radius, 0.1, 8, 32]} />
+          <torusGeometry args={[pattern.radius, 0.1, isMobile ? 4 : 8, isMobile ? 16 : 32]} />
           <meshStandardMaterial
             color="#8B5CF6"
             transparent
@@ -177,7 +181,7 @@ export const PhysicalMind = () => {
       
       {/* Central mind core */}
       <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[0.8, 16, 16]} />
+        <sphereGeometry args={[0.8, isMobile ? 8 : 16, isMobile ? 8 : 16]} />
         <meshStandardMaterial
           color="#20B2AA"
           transparent
@@ -188,8 +192,8 @@ export const PhysicalMind = () => {
       </mesh>
       
       {/* Interpretation light streams */}
-      {Array.from({ length: 6 }, (_, i) => {
-        const angle = (i / 6) * Math.PI * 2;
+      {Array.from({ length: isMobile ? 3 : 6 }, (_, i) => {
+        const angle = (i / (isMobile ? 3 : 6)) * Math.PI * 2;
         return (
           <mesh
             key={i}
@@ -200,7 +204,7 @@ export const PhysicalMind = () => {
             ]}
             rotation={[0, angle, 0]}
           >
-            <cylinderGeometry args={[0.01, 0.03, 3, 6]} />
+            <cylinderGeometry args={[0.01, 0.03, 3, isMobile ? 4 : 6]} />
             <meshStandardMaterial
               color="#20B2AA"
               transparent
