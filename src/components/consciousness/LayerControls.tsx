@@ -1,8 +1,6 @@
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Brain, Sparkles, Waves } from 'lucide-react';
+import { Brain, Sparkles, Waves, Info } from 'lucide-react';
 import type { LayerState } from '../CognitionStream';
 
 interface LayerControlsProps {
@@ -40,104 +38,125 @@ export const LayerControls = ({ layers, onToggleLayer, isMobile = false }: Layer
   ];
 
   return (
-    <div className={`absolute z-10 ${isMobile ? 'top-4 left-4 right-4' : 'top-6 left-6'} space-y-4`}>
-      {/* Title - Simplified for mobile */}
+    <div className={`absolute z-10 ${isMobile ? 'top-4 left-4 right-4' : 'top-8 left-8'} space-y-3`}>
+      {/* Modern Header - Minimalist */}
       {!isMobile && (
-        <Card className="glass-panel p-4">
-          <h1 className="text-xl font-bold text-foreground mb-2">
-            Cognition Stream
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Interactive 3D consciousness visualization
-          </p>
+        <Card className="glass-panel p-6 border-l-2 border-l-primary">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-display font-semibold text-foreground tracking-tight">
+                Cognition Stream
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1 font-light">
+                Real-time consciousness visualization experiment
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-accent/10 border border-accent/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              <span className="text-xs font-medium text-accent uppercase tracking-wider">Live</span>
+            </div>
+          </div>
         </Card>
       )}
 
-      {/* Layer Controls - Mobile optimized */}
-      <Card className={`glass-panel ${isMobile ? 'p-3' : 'p-4'} ${isMobile ? 'space-y-2' : 'space-y-3'}`}>
-        <h2 className={`font-semibold text-foreground ${isMobile ? 'text-base mb-2' : 'text-lg mb-3'}`}>
-          {isMobile ? 'Layers' : 'Consciousness Layers'}
-        </h2>
+      {/* Modern Layer Controls */}
+      <Card className={`glass-panel ${isMobile ? 'p-3' : 'p-5'}`}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className={`font-display font-medium text-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
+            {isMobile ? 'Layers' : 'Visualization Layers'}
+          </h2>
+          {!isMobile && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Info className="w-3 h-3" />
+              <span>{Object.values(layers).filter(Boolean).length}/3 active</span>
+            </div>
+          )}
+        </div>
         
         {isMobile ? (
-          // Compact mobile layout with switches
+          // Mobile: Compact switches
           <div className="space-y-2">
             {controls.map(({ key, label, icon: Icon, color }) => (
-              <div key={key} className="flex items-center justify-between p-2 rounded-lg bg-card/10">
-                <div className="flex items-center gap-2">
-                  <Icon className={`w-3 h-3 ${color}`} />
+              <div key={key} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-6 h-6 rounded-md flex items-center justify-center ${color.replace('text-', 'bg-')}/10`}>
+                    <Icon className={`w-3.5 h-3.5 ${color}`} />
+                  </div>
                   <span className="text-xs font-medium text-foreground">{label}</span>
                 </div>
                 <Switch
                   checked={layers[key]}
                   onCheckedChange={() => onToggleLayer(key)}
-                  className="scale-75"
+                  className="scale-90"
                 />
               </div>
             ))}
           </div>
         ) : (
-          // Desktop layout
-          controls.map(({ key, label, description, icon: Icon, color, gradient }) => (
-            <div
-              key={key}
-              className="flex items-center justify-between p-3 rounded-lg bg-card/20 backdrop-blur-sm border border-border/30"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full bg-gradient-to-br ${gradient} bg-opacity-20`}>
-                  <Icon className={`w-4 h-4 ${color}`} />
-                </div>
-                
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground text-sm">
-                      {label}
-                    </span>
-                    {layers[key] && (
-                      <Badge 
-                        variant="secondary" 
-                        className="text-xs px-2 py-0 ethereal-glow"
-                      >
-                        Active
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {description}
-                  </p>
-                </div>
-              </div>
-              
-              <Button
-                variant={layers[key] ? "default" : "outline"}
-                size="sm"
-                onClick={() => onToggleLayer(key)}
+          // Desktop: Modern minimal design
+          <div className="space-y-2">
+            {controls.map(({ key, label, description, icon: Icon, color }) => (
+              <div
+                key={key}
                 className={`
-                  transition-all duration-300
+                  group relative overflow-hidden rounded-lg border transition-all duration-200
                   ${layers[key] 
-                    ? `bg-gradient-to-r ${gradient} text-white shadow-lg` 
-                    : 'hover:bg-secondary/80'
+                    ? 'bg-card/80 border-border' 
+                    : 'bg-muted/30 border-transparent hover:border-border/50'
                   }
                 `}
               >
-                {layers[key] ? 'Hide' : 'Show'}
-              </Button>
-            </div>
-          ))
+                <div className="flex items-center justify-between p-3">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className={`
+                      w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
+                      ${layers[key] 
+                        ? `${color.replace('text-', 'bg-')}/15 shadow-sm` 
+                        : 'bg-muted/50'
+                      }
+                    `}>
+                      <Icon className={`w-4 h-4 ${layers[key] ? color : 'text-muted-foreground'}`} />
+                    </div>
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-sm font-medium ${layers[key] ? 'text-foreground' : 'text-muted-foreground'}`}>
+                          {label}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {description}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <Switch
+                    checked={layers[key]}
+                    onCheckedChange={() => onToggleLayer(key)}
+                  />
+                </div>
+                
+                {/* Active indicator bar */}
+                {layers[key] && (
+                  <div className={`absolute bottom-0 left-0 right-0 h-0.5 ${color.replace('text-', 'bg-')}`} />
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </Card>
 
-      {/* Instructions - Hidden on mobile */}
+      {/* Modern Instructions - Minimalist */}
       {!isMobile && (
         <Card className="glass-panel p-4">
-          <h3 className="text-sm font-medium text-foreground mb-2">
-            Controls
-          </h3>
-          <ul className="text-xs text-muted-foreground space-y-1">
-            <li>• Drag to rotate the view</li>
-            <li>• Scroll to zoom in/out</li>
-            <li>• Toggle layers to isolate effects</li>
-          </ul>
+          <div className="flex items-start gap-2">
+            <Info className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">Drag</span> to rotate • <span className="font-medium text-foreground">Scroll</span> to zoom • <span className="font-medium text-foreground">Toggle</span> layers above
+              </p>
+            </div>
+          </div>
         </Card>
       )}
     </div>
