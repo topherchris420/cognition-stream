@@ -1,6 +1,6 @@
 # Cognition Stream
 
-Cognition Stream is an interactive 3D web application that visualizes abstract concepts of consciousness. It uses a modern web stack, including Vite, React, and TypeScript, to render a dynamic scene with multiple layers representing different aspects of the mind. The project leverages `react-three-fiber` for 3D rendering and `shadcn/ui` for the user interface components.
+Cognition Stream from Vers3Dynamics is an interactive 3D web application that visualizes abstract concepts of consciousness. It uses a modern web stack, including Vite, React, and TypeScript, to render a dynamic scene with multiple layers representing different aspects of the mind. The project leverages `react-three-fiber` for 3D rendering and `shadcn/ui` for the user interface components.
 
 ## Technologies Used
 
