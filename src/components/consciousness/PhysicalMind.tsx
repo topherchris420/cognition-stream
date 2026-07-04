@@ -85,11 +85,11 @@ export const PhysicalMind = ({ isMobile = false }: PhysicalMindProps) => {
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.01;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
       
-      // Teal to purple perception colors
+      // Violet to mint perception colors
       const hue = Math.random();
-      colors[i3] = 0.1 + hue * 0.5;     // R
-      colors[i3 + 1] = 0.6 + hue * 0.4; // G
-      colors[i3 + 2] = 0.8 + hue * 0.2; // B
+      colors[i3] = 0.48 + hue * 0.17;
+      colors[i3 + 1] = 0.55 + hue * 0.31;
+      colors[i3 + 2] = 0.98 - hue * 0.18;
     }
     
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -139,7 +139,7 @@ export const PhysicalMind = ({ isMobile = false }: PhysicalMindProps) => {
       <mesh ref={auraRef} position={[0, 0, 0]}>
         <sphereGeometry args={[4, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
         <meshBasicMaterial
-          color="#20B2AA"
+          color="#A78BFA"
           transparent
           opacity={0.15}
           side={THREE.DoubleSide}
@@ -158,11 +158,11 @@ export const PhysicalMind = ({ isMobile = false }: PhysicalMindProps) => {
         >
           <torusGeometry args={[pattern.radius, 0.1, isMobile ? 4 : 8, isMobile ? 16 : 32]} />
           <meshStandardMaterial
-            color="#8B5CF6"
+            color="#A78BFA"
             transparent
             opacity={pattern.opacity}
-            emissive="#8B5CF6"
-            emissiveIntensity={0.2}
+            emissive="#A78BFA"
+            emissiveIntensity={0.35}
           />
         </mesh>
       ))}
@@ -183,11 +183,11 @@ export const PhysicalMind = ({ isMobile = false }: PhysicalMindProps) => {
       <mesh position={[0, 0, 0]}>
         <sphereGeometry args={[0.8, isMobile ? 8 : 16, isMobile ? 8 : 16]} />
         <meshStandardMaterial
-          color="#20B2AA"
+          color="#4ADE80"
           transparent
           opacity={0.4}
-          emissive="#20B2AA"
-          emissiveIntensity={0.3}
+          emissive="#4ADE80"
+          emissiveIntensity={0.45}
         />
       </mesh>
       
@@ -206,11 +206,11 @@ export const PhysicalMind = ({ isMobile = false }: PhysicalMindProps) => {
           >
             <cylinderGeometry args={[0.01, 0.03, 3, isMobile ? 4 : 6]} />
             <meshStandardMaterial
-              color="#20B2AA"
+              color="#A78BFA"
               transparent
               opacity={0.6}
-              emissive="#20B2AA"
-              emissiveIntensity={0.4}
+              emissive="#A78BFA"
+              emissiveIntensity={0.5}
             />
           </mesh>
         );
