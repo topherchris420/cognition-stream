@@ -70,11 +70,12 @@ export const HigherMind = ({ isMobile = false }: HigherMindProps) => {
       positions[i3 + 1] = radius * Math.cos(phi) + 8; // Above the figure
       positions[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
       
-      // Golden-white ethereal colors
+      // Aurora field colors: mint conception with violet variation
       const intensity = 0.5 + Math.random() * 0.5;
-      colors[i3] = intensity * (0.9 + Math.random() * 0.1);     // R
-      colors[i3 + 1] = intensity * (0.8 + Math.random() * 0.2); // G
-      colors[i3 + 2] = intensity * (0.3 + Math.random() * 0.4); // B
+      const aurora = Math.random();
+      colors[i3] = intensity * (0.29 + aurora * 0.36);
+      colors[i3 + 1] = intensity * (0.86 - aurora * 0.31);
+      colors[i3 + 2] = intensity * (0.50 + aurora * 0.48);
 
       indices[i] = i;
     }
@@ -158,11 +159,11 @@ export const HigherMind = ({ isMobile = false }: HigherMindProps) => {
         >
           <cylinderGeometry args={[0.02, 0.05, 6, isMobile ? 4 : 8]} />
           <meshStandardMaterial
-            color="#F59E0B"
+            color="#4ADE80"
             transparent
             opacity={0.6}
-            emissive="#F59E0B"
-            emissiveIntensity={0.3}
+            emissive="#4ADE80"
+            emissiveIntensity={0.55}
           />
         </mesh>
       ))}
@@ -171,11 +172,11 @@ export const HigherMind = ({ isMobile = false }: HigherMindProps) => {
       <mesh position={[0, 8, 0]}>
         <sphereGeometry args={[1.5, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
         <meshStandardMaterial
-          color="#FEF3C7"
+          color="#4ADE80"
           transparent
-          opacity={0.4}
-          emissive="#F59E0B"
-          emissiveIntensity={0.5}
+          opacity={0.34}
+          emissive="#A78BFA"
+          emissiveIntensity={0.45}
         />
       </mesh>
     </group>

@@ -8,54 +8,54 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Modern Google X Lab theme */
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    /* Glass Aurora experimental lab theme */
+    --background: 240 28% 14%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 231 30% 16%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 231 30% 16%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 56%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 142 76% 57%;
+    --primary-foreground: 240 28% 10%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 227 31% 26%;
+    --secondary-foreground: 210 40% 96%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 230 29% 21%;
+    --muted-foreground: 222 24% 72%;
 
-    --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 258 90% 78%;
+    --accent-foreground: 240 28% 10%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 12%;
-    --ring: 210 100% 56%;
+    --border: 226 31% 28%;
+    --input: 227 31% 22%;
+    --ring: 142 76% 57%;
 
-    /* Consciousness-specific colors - Modern palette */
-    --higher-mind: 45 100% 65%;
-    --higher-mind-glow: 45 100% 55%;
-    --neural-pulse: 210 100% 56%;
-    --neural-network: 220 90% 60%;
-    --physical-mind: 142 76% 36%;
-    --energy-flow: 270 100% 65%;
+    /* Consciousness-specific colors - Glass Aurora */
+    --higher-mind: 142 76% 64%;
+    --higher-mind-glow: 142 76% 57%;
+    --neural-pulse: 187 92% 69%;
+    --neural-network: 227 68% 66%;
+    --physical-mind: 258 90% 78%;
+    --energy-flow: 258 90% 78%;
 
-    /* Modern gradients */
-    --gradient-cosmic: linear-gradient(135deg, hsl(0 0% 4%), hsl(220 15% 8%), hsl(240 20% 10%));
-    --gradient-ethereal: linear-gradient(180deg, hsl(45 100% 65% / 0.1), transparent);
-    --gradient-neural: radial-gradient(circle, hsl(210 100% 56% / 0.15), transparent);
-    --gradient-consciousness: linear-gradient(90deg, hsl(142 76% 36% / 0.1), hsl(270 100% 65% / 0.1));
+    /* Immersive lab gradients */
+    --gradient-cosmic: radial-gradient(circle at 55% 18%, hsl(258 90% 78% / 0.18), transparent 28%), radial-gradient(circle at 45% 76%, hsl(142 76% 57% / 0.16), transparent 30%), linear-gradient(135deg, hsl(240 28% 14%), hsl(227 31% 17%) 52%, hsl(231 45% 10%));
+    --gradient-ethereal: linear-gradient(180deg, hsl(142 76% 57% / 0.16), hsl(258 90% 78% / 0.04));
+    --gradient-neural: radial-gradient(circle, hsl(187 92% 69% / 0.18), transparent);
+    --gradient-consciousness: linear-gradient(90deg, hsl(142 76% 57% / 0.12), hsl(258 90% 78% / 0.14));
 
     /* Modern shadows - subtle */
-    --shadow-ethereal: 0 4px 24px hsl(var(--higher-mind-glow) / 0.2);
-    --shadow-neural: 0 4px 24px hsl(var(--neural-pulse) / 0.3);
-    --shadow-consciousness: 0 2px 16px hsl(var(--physical-mind) / 0.2);
-    --glow-intense: 0 0 32px hsl(var(--energy-flow) / 0.4);
+    --shadow-ethereal: 0 0 34px hsl(var(--higher-mind-glow) / 0.26);
+    --shadow-neural: 0 0 30px hsl(var(--neural-pulse) / 0.28);
+    --shadow-consciousness: 0 0 30px hsl(var(--physical-mind) / 0.22);
+    --glow-intense: 0 0 42px hsl(var(--energy-flow) / 0.38);
 
     /* Modern animations - snappier */
     --transition-ethereal: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -63,7 +63,7 @@ All colors MUST be HSL.
     --animation-pulse: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     --animation-flow: flow 6s ease-in-out infinite;
 
-    --radius: 0.5rem;
+    --radius: 0.375rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -83,42 +83,41 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Modern dark theme - same as root */
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    --background: 240 28% 14%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 231 30% 16%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 231 30% 16%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 56%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 142 76% 57%;
+    --primary-foreground: 240 28% 10%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 227 31% 26%;
+    --secondary-foreground: 210 40% 96%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 230 29% 21%;
+    --muted-foreground: 222 24% 72%;
 
-    --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 258 90% 78%;
+    --accent-foreground: 240 28% 10%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 12%;
-    --ring: 210 100% 56%;
+    --border: 226 31% 28%;
+    --input: 227 31% 22%;
+    --ring: 142 76% 57%;
 
     /* Consciousness colors - consistent */
-    --higher-mind: 45 100% 65%;
-    --higher-mind-glow: 45 100% 55%;
-    --neural-pulse: 210 100% 56%;
-    --neural-network: 220 90% 60%;
-    --physical-mind: 142 76% 36%;
-    --energy-flow: 270 100% 65%;
+    --higher-mind: 142 76% 64%;
+    --higher-mind-glow: 142 76% 57%;
+    --neural-pulse: 187 92% 69%;
+    --neural-network: 227 68% 66%;
+    --physical-mind: 258 90% 78%;
+    --energy-flow: 258 90% 78%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -137,6 +136,20 @@ All colors MUST be HSL.
 
   body {
     @apply bg-[var(--gradient-cosmic)] text-foreground overflow-hidden font-sans antialiased;
+    font-feature-settings: "ss01" 1, "cv02" 1, "cv03" 1;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.035) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(circle at center, black, transparent 72%);
+    z-index: 1;
   }
 
   /* Consciousness-specific animations */
@@ -201,10 +214,10 @@ All colors MUST be HSL.
 
   /* Modern glass morphism */
   .glass-panel {
-    background: hsl(var(--card) / 0.6);
-    backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid hsl(var(--border) / 0.3);
-    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.3);
+    background: linear-gradient(135deg, hsl(var(--card) / 0.58), hsl(var(--card) / 0.28));
+    backdrop-filter: blur(28px) saturate(170%);
+    border: 1px solid hsl(var(--foreground) / 0.12);
+    box-shadow: 0 18px 60px hsl(240 35% 5% / 0.42), inset 0 1px 0 hsl(var(--foreground) / 0.08);
   }
 
   .ethereal-glow {

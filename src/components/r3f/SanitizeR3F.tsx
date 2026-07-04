@@ -18,7 +18,15 @@ const shouldStripKey = (key: string) => {
 };
 
 function sanitizeNode(node: React.ReactNode): React.ReactNode {
-  if (Array.isArray(node)) return node.map(sanitizeNode);
+  if (Array.isArray(node)) {
+    return node.map((child, index) => {
+      const sanitized = sanitizeNode(child);
+      if (React.isValidElement(sanitized) && sanitized.key == null) {
+        return React.cloneElement(sanitized, { key: `r3f-${index}` });
+      }
+      return sanitized;
+    });
+  }
   if (!React.isValidElement(node)) return node;
 
   // Sanitize children first

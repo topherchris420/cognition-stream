@@ -31,9 +31,9 @@ const neuronFragmentShader = `
     float wavePhase = u_time * 3.0 + length(v_position) * 0.5;
     float activity = 0.3 + sin(wavePhase) * 0.4 + v_random * 0.3;
 
-    float r = 0.1 + activity * 0.5;
-    float g = 0.2 + activity * 0.7;
-    float b = 0.8 + activity * 0.2;
+    float r = 0.25 + activity * 0.15;
+    float g = 0.52 + activity * 0.40;
+    float b = 0.82 + activity * 0.16;
 
     vec3 final_color = vec3(r, g, b);
 
@@ -92,11 +92,11 @@ export const PhysicalBrain = ({ isMobile = false }: PhysicalBrainProps) => {
             neurons[j].position.x, neurons[j].position.y, neurons[j].position.z
           );
           
-          // Neural activity colors (blue to purple spectrum)
+          // Neural activity colors (cyan to electric blue spectrum)
           const activity = (neurons[i].activity + neurons[j].activity) / 2;
           connectionColors.push(
-            0.2 + activity * 0.3, 0.3 + activity * 0.5, 0.8 + activity * 0.2,
-            0.2 + activity * 0.3, 0.3 + activity * 0.5, 0.8 + activity * 0.2
+            0.22 + activity * 0.18, 0.62 + activity * 0.28, 0.88 + activity * 0.1,
+            0.22 + activity * 0.18, 0.62 + activity * 0.28, 0.88 + activity * 0.1
           );
         }
       }
@@ -123,9 +123,9 @@ export const PhysicalBrain = ({ isMobile = false }: PhysicalBrainProps) => {
       
       // Initial colors
       const activity = neuron.activity;
-      colors[i * 3] = 0.1 + activity * 0.4;
-      colors[i * 3 + 1] = 0.2 + activity * 0.6;
-      colors[i * 3 + 2] = 0.8 + activity * 0.2;
+      colors[i * 3] = 0.22 + activity * 0.18;
+      colors[i * 3 + 1] = 0.62 + activity * 0.28;
+      colors[i * 3 + 2] = 0.88 + activity * 0.1;
 
       // Random attribute for shader
       randoms[i] = Math.random();
@@ -157,11 +157,11 @@ export const PhysicalBrain = ({ isMobile = false }: PhysicalBrainProps) => {
         const intensity = 0.2 + Math.sin(connectionPhase) * 0.3;
         
         // Update both vertices of the line
-        colors[i] = intensity * 0.4;
-        colors[i + 1] = intensity * 0.6;
+        colors[i] = intensity * 0.35;
+        colors[i + 1] = intensity * 0.85;
         colors[i + 2] = intensity;
-        colors[i + 3] = intensity * 0.4;
-        colors[i + 4] = intensity * 0.6;
+        colors[i + 3] = intensity * 0.35;
+        colors[i + 4] = intensity * 0.85;
         colors[i + 5] = intensity;
       }
       
@@ -175,7 +175,7 @@ export const PhysicalBrain = ({ isMobile = false }: PhysicalBrainProps) => {
       <mesh position={[0, 1, 0]}>
         <sphereGeometry args={[2.8, isMobile ? 16 : 32, isMobile ? 16 : 32]} />
         <meshBasicMaterial
-          color="#8B5CF6"
+          color="#67E8F9"
           transparent
           opacity={0.1}
           wireframe={false}
